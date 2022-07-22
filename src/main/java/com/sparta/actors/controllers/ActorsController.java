@@ -3,6 +3,8 @@ package com.sparta.actors.controllers;
 import com.sparta.actors.dataobjects.Actor;
 import com.sparta.actors.dataobjects.RequestActor;
 import com.sparta.actors.services.SakilaDAO;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +22,8 @@ public class ActorsController {
     }
 
     @GetMapping("/actor/{id}") // the get mapping links a data provider to a data request
-    public Actor actorDetails(@PathVariable int id){
+    @ApiOperation("Get Actor identified by actor_id specified in the path")
+    public Actor actorDetails(@ApiParam("actor_id") @PathVariable int id){
         return  dao.getActor(id);
         //new Actor(id,"Fred","Bloggs",new Date());
     }
