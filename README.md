@@ -1,5 +1,5 @@
 # ActorAPI
-requires [sakila download] https://dev.mysql.com/doc/sakila/en/sakila-installation.html
+requires [sakila download] https://dev.mysql.com/doc/sakila/en/sakila-installation.html/EntityManager
 
 
 
@@ -195,8 +195,9 @@ This is bacause the field is described as
 * on update CURRENT_TIMESTAMP
 
 which will override any value which we put with the current timestamp on the server
-partially this is because the __EntityManager__ tends to do more work than necessary and 
-when it flushes it's data it does an update.
+partially this is because the __JPA__ tends to do more work than necessary and 
+when it often creates an empty record then updates it, but in any case we would
+still have the problem when we do updates.
 
 We can now create a __JPA\_Repository__ object
 
