@@ -19,7 +19,7 @@ First add the ifollowing dependancy to your pom.xml
 which can be found by searching for __springfox boot starter__
 by selecting __generate\>add dependency__ on the pom.xml menu.
 
-Add a new class at com.sparta.actors and calkl it SwaggerConfig
+Add a new class at __com.sparta.actors__ and call it __SwaggerConfig__
 
 ```
 package com.sparta.actors;
@@ -45,17 +45,20 @@ public class SwaggerConfig {
                         "com.sparta.actors.controllers")) // where we find API interface controllers for swagger to describe
                 .paths(PathSelectors.any())
                 .build().apiInfo(new ApiInfoBuilder()
-                        .title("ACTORS-API")
+                        .title("ACTORS-API")             // Title of swagger page
                         .description("""
                                     Demonstration of a simple API
                                     Using Spring boot
                                     to access mysql database sakila and it's table actors
-                                    """)
+                                    """)                // Description for swagger page
                         .version("1.0.0")
                         .build());
     }
 }
 ```
+In the above __@Bean__ followed bu __public Docket api() {__ 
+tells Spring that in order to create a Docket (should it find one needed, and it will when it starts up Swagger)
+rather than just trying to call it's constructor call the annotated method in this case __SwaggerConfig.api()__.
 
 Add the following line to application.properties
 
