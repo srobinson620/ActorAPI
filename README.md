@@ -872,6 +872,8 @@ Which checks that the RequestActor stored in createActorParams object is what wo
 
 Finally there are two tests that test error conditions.
 
+#### error condition tests
+
 The first name must be provided and must have a length greater than 1, here we simply provide
 a blank first name in the test __addActorBlankFirstName__ and do not provide a first name 
 in __addActorMissingFirstName__ in both cases if the __@Valid__, __@null__ and __@Size__
@@ -899,6 +901,8 @@ __RequestActor__ are correct a __400 BAD_REQUEST__ status will be returned.
                         .content(body))
                 .andExpect(status().isBadRequest());
     }
-}```
+}
+```
+
 __Thats all folks__
 
