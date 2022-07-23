@@ -118,8 +118,8 @@ class ActorsControllerTest {
         var jsonConverter = new ObjectMapper();
         String body = jsonConverter.writeValueAsString(requestData);
         MvcResult res = mvc.perform(put("/actor")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn();
         Actor resBody = jsonConverter.readValue(res.getResponse().getContentAsString(), Actor.class);
@@ -131,5 +131,25 @@ class ActorsControllerTest {
         assertThat(createActorParams.get(0))
                 .extracting("firstName", "lastName")
                 .containsExactly(FIRST1, LAST1);
+    }
+    @Test
+    void addActorBlankFirstName() throws Exception {
+        Map<String, String> requestData = Map.of("lastName", LAST1, "firstName", "");
+        var jsonConverter = new ObjectMapper();
+        String body = jsonConverter.writeValueAsString(requestData);
+        mvc.perform(put("/actor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void addActorMissingFirstName() throws Exception {
+        Map<String, String> requestData = Map.of("lastName", LAST1);
+        var jsonConverter = new ObjectMapper();
+        String body = jsonConverter.writeValueAsString(requestData);
+        mvc.perform(put("/actor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest());
     }
 }
