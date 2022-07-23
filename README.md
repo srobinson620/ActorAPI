@@ -132,7 +132,7 @@ This should insert
         </dependency>
 ```
 
-There is an intelliJ plugin called JPA buddy, You may find this usefull, though this will not be used here.
+There is an intelliJ plugin called JPA buddy, You may find this useful, though this will not be used here.
 
 We then enable JPA by adding the __@EnableJpaRepositories__ annotaion to the __ActorsApplication__ class.
 
@@ -221,7 +221,7 @@ public interface ActorRepo extends JpaRepository<Actor, Integer>{
 It extends the __JPARepository__ which is a generic taking two types, the first is the
 Type of the Entity Object
 and the second is the type of the primary key.
-The generated class contains really usefull methods.
+The generated class contains really useful methods.
 
 In a bigger application you would create one of these for each Entity you have,
 and we may add special methods with complex queries or functions.
