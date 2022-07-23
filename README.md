@@ -220,7 +220,7 @@ public interface ActorRepo extends JpaRepository<Actor, Integer>{
 
 It extends the __JPARepository__ which is a generic taking two types, the first is the
 Type of the Entity Object
-and the second is the type of the primnary key.
+and the second is the type of the primary key.
 The generated class contains really usefull methods.
 
 In a bigger application you would create one of these for each Entity you have,
