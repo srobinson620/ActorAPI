@@ -16,7 +16,8 @@ First add the ifollowing dependancy to your pom.xml
         </dependency>
 ```
 
-which can be found by searching for __springfox boot starter__ in the by selecting __generate\>add dependency__ on the pom.xml menu.
+which can be found by searching for __springfox boot starter__
+by selecting __generate\>add dependency__ on the pom.xml menu.
 
 Add a new class at com.sparta.actors and calkl it SwaggerConfig
 
@@ -335,7 +336,7 @@ the fourth creates a test instance of
 __SaklilaDAO__ set up with the mock repo created above.
 
 
-#### Test getActor
+### Test getActor
 
 Within the getActor test method all we need to do is:
 
@@ -361,7 +362,7 @@ The second line says test that when inst.getActor(TEST_ID1) is called that the r
 
 The third line says verify that getReferenceById was called with the parameter TEST_ID1.
 
-#### Test getAllActors
+### Test getAllActors
 
 We are going to need a list to return, this can be generated using the method __Arrays.aslist()__ so the body of this test is:-
 
@@ -388,7 +389,7 @@ The next two lines chack that the returned entity is the expected list.
 and teh final line chacks that __findAll__ was called.
 
 
-#### Test create an Actor
+### Test create an Actor
 
 This is the final method createActors
 
@@ -406,8 +407,6 @@ so the test method is now:
         reqAct.setFirstName(FIRST2);
         reqAct.setLastName(LAST2);
 
-        when(repo.getReferenceById(TEST_ID2)).thenReturn(actor2);
-
         when(repo.saveAndFlush(any())).thenAnswer(context->{
             Actor a = (Actor)context.getArgument(0);
             a.setActorId(TEST_ID2);
@@ -416,12 +415,10 @@ so the test method is now:
         Actor res = inst.createActors(reqAct);
 
         assertThat(res).extracting("actorId", "firstName", "lastName").contains(TEST_ID2, FIRST2, LAST2);
-        verify(repo).saveAllAndFlush(any());
-        verify(repo).getReferenceById(TEST_ID2);
+        verify(repo).saveAndFlush(any());
  ```
 
-The first 3 lines create the object we are sending the next line mocks the getReferenceById call which will be called at the end
-to retrieve the just saved entity.
+The first 3 lines create the object we are sending.
 
 The next 4 lines mock the activity of saveAndFlush in that it takes in an Action then pokes the actorId back into it.
 
@@ -499,8 +496,6 @@ class SakilaDAOTest {
         reqAct.setFirstName(FIRST2);
         reqAct.setLastName(LAST2);
 
-        when(repo.getReferenceById(TEST_ID2)).thenReturn(actor2);
-
         when(repo.saveAndFlush(any())).thenAnswer(context->{
             Actor a = (Actor)context.getArgument(0);
             a.setActorId(TEST_ID2);
@@ -509,9 +504,301 @@ class SakilaDAOTest {
         Actor res = inst.createActors(reqAct);
 
         assertThat(res).extracting("actorId", "firstName", "lastName").contains(TEST_ID2, FIRST2, LAST2);
-        verify(repo).saveAllAndFlush(any());
-        verify(repo).getReferenceById(TEST_ID2);
+        verify(repo).saveAndFlush(any());
     }
 }
 ```
+
+## Testing ActionController
+
+Testing the action controller and it's related configuration is best done using WebMvcTest which is a framework 
+provided by the __spring-boot-starter-test__ which should already be included in your __pom.xml__.
+
+This alows the methods of the controller to be invoked as though they had been excersized over the web.
+
+The class can be automatically created in the right place by going to the SakilaDAO class in InjelliJ right click and select
+__Generate__ then select __Test...__
+
+A popup opens to select what you wish it to create:-
+
+* __Junit5__ as the test library.
+* __ActorsControllerTest__ as the name.
+* superclass should be blank.
+* Destination package, accept the defaulted value __com.sparta.actors.services__.
+* tick setUp/*Before but not tearDown/@After
+* tick actorDetails(id:int), actorDetails(), basic(), addActor.
+
+nnotate the constructed test class with 
+```
+@WebMvcTest(ActorsController.class)
+```
+This notifies that spring's WebMvcTest must be used to execute the tests in this class.
+
+We will here use @MockBean to create mocks and __@Autowired__ to create the test instance which is a MockMvc test environment.
+
+We need to mock :-
+* __SakilaDao__ as the unit we are testing __ActorControler__ will make calls to it.
+* __ActorRepo__ because if we don't the spring test environment will try to start the database connection.
+
+So we need to  create class variables like:-
+
+```
+    @MockBean
+    ActorRepo repo;
+    @MockBean
+    SakilaDAO dao;
+    @Autowired
+    MockMvc mvc;
+```
+
+We will also need some test data, so I'm going to create two Actor instances populated with constants,
+the actors are actually constructed in the methodn __setUp__ annotated with __@BeforeEach__.
+
+
+```
+    Actor actor1;
+    Actor actor2;
+
+    static final int TEST_ID1 = 23;
+    static final int TEST_ID2 = 77;
+    static final String FIRST1="Freddy";
+    static final String LAST1="Bloggs";
+    static final String FIRST2="MARY";
+    static final String LAST2="SMITH";
+
+    static final Date D1 = new Date(2020, 1, 1);
+    static final Date D2 = new Date(2020, 2, 2);
+
+    @BeforeEach
+    public void setUp(){
+        actor1 = new Actor(TEST_ID1, FIRST1, LAST1, D1);
+        actor2 = new Actor(TEST_ID2, FIRST2, LAST2, D2);
+    }
+ 
+```
+
+### Testing the __/__ end point
+
+As designed GET calls to __/__ return a fixed string __\<h1\>Hello\</h1\>__.
+
+The method that performs this function is called __basic()__ so we have a method in the test class called __basic()__.
+
+```
+    @Test
+    void basic() throws Exception {
+        MvcResult res = mvc.perform(get("/"))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+        assertThat(res.getResponse().getContentAsString()).isEqualTo("\<h1\>Hello\</h1\>");
+        verifyNoInteractions(repo, dao);
+    }
+```
+
+Th __@Test__  means this is a test method.
+
+The method signature contains __throws Exception__ because mvc.perform can throw Exception.
+
+* __mvc.perform(get("/"))__ means execute a get to the url __/__ 
+* __.andExpect(status().is2xxSuccessful())__ means check that the result status is in the range 200 to 299.
+* __.andReturn()__ means return a structure describing the call that has just completed it is put into the variable __res__.
+
+We can then check that the returned text is __\<h1\>Hello\</h1\>__ using the line
+
+```
+        assertThat(res.getResponse().getContentAsString()).isEqualTo("<h1>Hello</h1>");
+```
+
+Neither of the mocks shouild have been called so the line
+```
+        verifyNoInteractions(repo, dao);
+```
+shows this, if either had been called an error would be generated.
+
+### Testing the __/actor/{id}__ end point.
+
+We need to setup the SakliaDao mock to return actor2 if the method getActor is called with parameter TEST_ID2.
+
+```
+        when(dao.getActor(TEST_ID2)).thenReturn(actor2);
+```
+
+We can then do the call 
+
+```
+MvcResult res = mvc.perform(get("/actor/{id}", TEST_ID2))
+                .andReturn();
+```
+This does the GET to /actor/77 and returns a structure as res.
+
+```
+        assertThat(res.getResponse().getStatus()).isEqualTo(200);
+```
+Checks that the response status is 200.
+```
+        assertThat(res.getResponse().getContentType()).isEqualTo("application/json");
+```
+Checks that the returned content type id application/json.
+
+```
+        var jsonConverter = new ObjectMapper();
+        Actor resData = jsonConverter.readValue(res.getResponse().getContentAsString(), Actor.class);
+```
+jsonConverter is a Jackson object mapper that can be used for converting objects to and from json strings.
+
+In this case it converts the received body to an Actor.
+
+If it is not correct an error message will be generated.
+
+If this is not an error then resData is now the received Actor.
+
+We than test that the received actor is correct.
+
+```
+        assertThat(resData)
+                .extracting("actorId", "firstName", "lastName")
+                        .containsExactly(TEST_ID2, FIRST2, LAST2);
+```
+by extracting 3 field and comparing against the expected values.
+```
+        verify(dao).getActor(TEST_ID2);
+        verifyNoInteractions(repo);
+```
+
+We know that getActor should have been called to get this data so the first of these
+two lines verifies that that method was called. The second line verifies that repo was never called.
+
+We can also test for what happens if an invalid actor\_id is presented, we expect it to generatea 400 __BAD\_REQUEST__ response.
+
+The ifollowing very simple test method does this
+```
+    @Test
+    void actorDetailsAlphaActorId() throws Exception {
+        mvc.perform(get("/actor/{id}", "ABCDE")).andExpect(status().isBadRequest());
+    }
+    
+```
+We should also include tests to check what happens if the given actor\_id is valid but unknown however we know that the code as
+it stands returns a 500 error rather than the expected 404, this is therefore technical debt to be fixed at a future times,
+this requirement should be recorded in trello for future correction.
+
+### Testing the __/actors__ end point.
+
+The /actors end point  is also supported by an overloaded method also called actorDetails
+so Intelija created a test method called __actorDetailsTest__ to test this, noting this it would
+probably be better to rename the mthod to getAllActors or similar, however we will considder that
+technical debt for the future, it does not matter for now.
+
+First we need to create test date, the data needs to return a list of Action when getAllActors is called, so
+```
+        List<Actor> allActors = asList(actor1, actor2); // create a list of 2 actors
+        when(dao.getaAllActors()).thenReturn(allActors);
+```
+
+We can now invoke the end point with
+```
+        MvcResult res = mvc.perform(get("/actors"))
+                .andReturn();
+```
+Which performs the GET call and set res to be the webmvc data structure which can be tested.
+
+First check that we got 200 status and content type of application/json.
+```
+        assertThat(res.getResponse().getStatus()).isEqualTo(200);
+        assertThat(res.getResponse().getContentType()).isEqualTo("application/json");
+```
+
+Now use Jackson to parse the recived body into a list of Maps, we could make it return a
+list of Action objects but that is more complex, at this moment I considder it unnecessarily complex.
+
+```
+        var jsonConverter = new ObjectMapper();
+        List<Map<String, String>> resData = jsonConverter.readValue(res.getResponse().getContentAsString(), List.class);
+```
+
+We can then test the contents of the receieved list
+
+```
+        assertThat(resData).hasSize(2);
+        assertThat(resData)
+                .extracting("actorId", "firstName", "lastName")
+                .containsExactly(tuple(TEST_ID1, FIRST1, LAST1), tuple(TEST_ID2, FIRST2, LAST2));
+```
+
+This form of the assertJ's assertThat ... extract ... caontainsExactly is very tidy way of testing array contents, 
+I like it because it is consice and explicit, not everyone does.
+
+Finally as with all the other tests we check that the data came from the correct mock calls.
+
+```
+        verify(dao).getaAllActors();
+        verifyNoInteractions(repo);
+```
+
+### Testing the __PUT /actor__ end point
+
+The __PUT /actor__ end point creates a new actor the addActor method is called.
+
+We will now fill in the test method __addActor__ 
+
+First we setup dao.createActors to return actor1 one if ever called, we cannot predetermin what will be passed to this 
+as it is generated by the sp[ring mvc framework so we have toi accept any parameter, the style used here stores2s
+ =whatever parameters are sent into a list called createActorParams.
+
+```
+        List<RequestActor> createActorParams = new ArrayList<>();
+        when(dao.createActors(any())).thenAnswer(context ->{
+            createActorParams.add((RequestActor)context.getArgument(0));
+            return actor1;
+        });
+ ```
+We will need to construct a body string to send, this is done here as follows
+```
+        Map<String, String> requestData = Map.of("lastName", LAST1, "firstName", FIRST1);
+        var jsonConverter = new ObjectMapper();
+        String body = jsonConverter.writeValueAsString(requestData);
+```
+
+This constructs a small map then uses the Jackson object mapper to convert it to a Json string.
+
+
+We then perform the put
+```
+        MvcResult res = mvc.perform(put("/actor")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+```
+
+The fragment
+```
+             put("/actor")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)
+```
+Generates the put call with application/json content type and the previously generated body string as the body.
+
+The return status is checked for being between 200 and 299 then the recieved data is stored as res which we can then test.
+
+```
+        Actor resBody = jsonConverter.readValue(res.getResponse().getContentAsString(), Actor.class);
+```
+
+This converts the recieved body into an Actor using the previously created Jackson ObjectMapper.
+
+We check the received data is correct withi
+```
+        assertThat(resBody)
+                .extracting("actorId", "firstName", "lastName")
+                .containsExactly(actor1.getActorId(), actor1.getFirstName(), actor1.getLastName());
+```
+We check that dao.createActor was called with the correct parameter using
+```
+        assertThat(createActorParams).hasSize(1);
+        assertThat(createActorParams.get(0))
+                .extracting("firstName", "lastName")
+                .containsExactly(FIRST1, LAST1);
+```
+Which checks that the RequestActor stored in createActorParams object is what would be expected.
+
 

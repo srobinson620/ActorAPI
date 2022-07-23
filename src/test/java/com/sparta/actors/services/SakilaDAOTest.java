@@ -63,8 +63,6 @@ class SakilaDAOTest {
         reqAct.setFirstName(FIRST2);
         reqAct.setLastName(LAST2);
 
-        when(repo.getReferenceById(TEST_ID2)).thenReturn(actor2);
-
         when(repo.saveAndFlush(any())).thenAnswer(context->{
             Actor a = (Actor)context.getArgument(0);
             a.setActorId(TEST_ID2);
@@ -72,8 +70,9 @@ class SakilaDAOTest {
         });
         Actor res = inst.createActors(reqAct);
 
-        assertThat(res).extracting("actorId", "firstName", "lastName").contains(TEST_ID2, FIRST2, LAST2);
-        verify(repo).saveAllAndFlush(any());
-        verify(repo).getReferenceById(TEST_ID2);
+        assertThat(res)
+                .extracting("actorId", "firstName", "lastName")
+                .contains(TEST_ID2, FIRST2, LAST2);
+        verify(repo).saveAndFlush(any());
     }
 }
