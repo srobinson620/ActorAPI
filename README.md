@@ -878,5 +878,27 @@ in __addActorMissingFirstName__ in both cases if the __@Valid__, __@null__ and _
 used in the class under test __ActorsController__ and the related data transfer object 
 __RequestActor__ are correct a __400 BAD_REQUEST__ status will be returned.
 
+```
+    @Test
+    void addActorBlankFirstName() throws Exception {
+        Map<String, String> requestData = Map.of("lastName", LAST1, "firstName", "");
+        var jsonConverter = new ObjectMapper();
+        String body = jsonConverter.writeValueAsString(requestData);
+        mvc.perform(put("/actor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest());
+    }
+    @Test
+    void addActorMissingFirstName() throws Exception {
+        Map<String, String> requestData = Map.of("lastName", LAST1);
+        var jsonConverter = new ObjectMapper();
+        String body = jsonConverter.writeValueAsString(requestData);
+        mvc.perform(put("/actor")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest());
+    }
+}```
 __Thats all folks__
 
