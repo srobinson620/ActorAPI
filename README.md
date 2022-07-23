@@ -42,7 +42,11 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(
-                        "com.sparta.actors.controllers")) // where we find API interface controllers for swagger to describe
+                        "com.sparta.actors.controllers")) // where to find API controllers for swagger to describe
+                                                          // not this is a string so is easily set wrong it should
+                                                          // be a package nameswagger will search it and all 
+                                                          // packages within it for files annotated with
+                                                          // @Controller or @RestController
                 .paths(PathSelectors.any())
                 .build().apiInfo(new ApiInfoBuilder()
                         .title("ACTORS-API")             // Title of swagger page
