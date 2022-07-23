@@ -305,7 +305,19 @@ However we can and should test:-
 * ActorsController
 * SakilaDAO
 
-We will be using Mockito to mock objects and WebMvc to invoke the API end points in a test mode.
+We will be using __Mockito__ to mock objects and __WebMvc__ to invoke the API end pointse. We are also using the
+__assertThat__ static method from  AspectJ to verify values, ensure that the import statement is correct as there are 
+a number of assertThat methods about the one used has more facilities than most.
+
+```
+import static org.assertj.core.api.Assertions.assertThat;
+```
+
+### Invoking tests
+
+Inside intellij you can right click on the project name in the Project pane on the left hand side (usually) and select
+__Run All Tests__, or with a test class displayed you can right click within it and select __Run "xxx"__
+where xxx is the class name to execute just the tests you are working on.
 
 ## Testing SakilaDAO
 
@@ -342,7 +354,6 @@ class SakilaDAOTest {
     }
 }
 ```
-You can execute the tests from within a right click menu on the SakilaDAOTest class in intellij.
 
 We are going to mock __ActorRepo__ and we will need a couple of instances of __Actor__ so add them as class properties;
 
