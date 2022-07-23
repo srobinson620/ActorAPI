@@ -78,13 +78,13 @@ will provide swagger documentation.
 
 Swagger provides a number of annotations that can be used to improve the documentation.
 
-for instance if you add the annoitation 
+for instance if you add 
 
 ```
 @ApiOperation("Get Actor identified by actor_id specified in the path")
 ```
 
-to the actorDetails method in ActorsController
+to the __actorDetails__ method in __ActorsController__
 
 and add 
 
@@ -102,9 +102,9 @@ so we get
     public Actor actorDetails(@ApiParam("actor_id") @PathVariable int id){
 ```
 
-These will be added to the swagger outout..
+These will be added to the swagger outout as can be seen
 
-
+http://localhost:8088/swagger-ui/#/actors-controller/actorDetailsUsingGET
 
 
 # Converting to using JPA and Hibernate
