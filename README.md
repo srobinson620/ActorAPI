@@ -1,12 +1,22 @@
 # ActorAPI
 requires [sakila download] https://dev.mysql.com/doc/sakila/en/sakila-installation.html/EntityManager
 
+When we use Spring Initializr to build our initial application it generates a single test
+__ActorsApplicationTests.java__
 
+This is a trivial test that just initialises the spring system, useful to run this initially, 
+however it will try to initialise things that may have a dependancy outside of the code, that
+is it may initialise JDBC or Hibernate and if the database is not available at test time which
+is often the case this test is likely to fail so it should be removed.
+
+```
+$ rm src/test/java/com/sparta/actors/ActorsApplicationTests.java
+```
 
 
 ## Adding Swagger to the API
 
-First add the ifollowing dependancy to your pom.xml
+First add the following dependancy to your pom.xml
 
 ```
         <dependency>
@@ -133,14 +143,6 @@ This should insert
 ```
 
 There is an intelliJ plugin called JPA buddy, You may find this useful, though this will not be used here.
-
-We then enable JPA by adding the __@EnableJpaRepositories__ annotaion to the __ActorsApplication__ class.
-
-```
-@SpringBootApplication
-@EnableJpaRepositories
-public class ActorsApplication {
-```
 
 First we need to modify __Actor__ to be an entity bean which directly maps to the database table __actor__.
 
