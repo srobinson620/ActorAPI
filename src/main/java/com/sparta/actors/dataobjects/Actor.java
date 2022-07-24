@@ -1,14 +1,33 @@
 package com.sparta.actors.dataobjects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
-public class Actor {
-    private int actorId;
-    private String firstName;
-    private String lastName;
-    private Date lastUpdate;
+import static javax.persistence.GenerationType.IDENTITY;
 
-    public Actor(int actorId, String firstName, String lastName, Date lastUpdate) {
+@Entity(name = "actor")
+@JsonIgnoreProperties("hibernateLazyInitializer")
+public class Actor {
+    @Id
+    @GeneratedValue(strategy=IDENTITY)
+    @Column(name = "actor_id")
+    private Integer actorId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "last_update")
+    private Date lastUpdate;
+    public Actor(){
+
+    }
+
+    public Actor(Integer actorId, String firstName, String lastName, Date lastUpdate) {
         this.actorId = actorId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -16,10 +35,10 @@ public class Actor {
     }
 
 
-    public int getActorId() {
+    public Integer getActorId() {
         return actorId;
     }
-    public void setActorId(int actorId) {
+    public void setActorId(Integer actorId) {
         this.actorId = actorId;
     }
     public String getFirstName() {
