@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>spring web</title>
+</head>
+<body>
+<h1>Actor list</h1>
+<table>
+    <tr th:each="entry:${actList}">
+        <!-- data for this comes from the web controller which gets it from the dao  -->
+        <td th:text="${entry.firstName}"></td>  <td th:text="${entry.lastName}"></td>
+    </tr>
+</table>
+</body>
+</html>
