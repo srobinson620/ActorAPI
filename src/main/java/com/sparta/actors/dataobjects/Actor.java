@@ -10,8 +10,9 @@ import java.util.Date;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-@Entity(name = "actor")
-@JsonIgnoreProperties("hibernateLazyInitializer")
+@Entity(name = "actor")//this tells spring to attach this object to hibernate as a database entity
+@JsonIgnoreProperties("hibernateLazyInitializer") //this annotation tells jackson not to serialize a
+// virtual field that hibernate uses internally called hibernateLazyInitializer (used for the API)
 public class Actor {
     @Id
     @GeneratedValue(strategy=IDENTITY)
@@ -34,17 +35,16 @@ public class Actor {
         this.lastUpdate = lastUpdate;
     }
 
-
     public Integer getActorId() {
         return actorId;
     }
     public void setActorId(Integer actorId) {
         this.actorId = actorId;
     }
+
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -52,7 +52,6 @@ public class Actor {
     public String getLastName() {
         return lastName;
     }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -60,7 +59,6 @@ public class Actor {
     public Date getLastUpdate() {
         return lastUpdate;
     }
-
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
     }

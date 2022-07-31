@@ -33,7 +33,7 @@ public class ActorsController {
     }
     @GetMapping("/")
     public String basic(){
-        return "<h1>Hello</h1>";
+        return "<h1>No data available on this path</h1>";
     }
     @PutMapping("/actor")
     public Actor addActor(@Valid @RequestBody RequestActor actorNoId){

@@ -14,19 +14,17 @@ import java.util.List;
 
 @Service
 public class SakilaDAO {
-    private final ActorRepo repo;
-
+    private final ActorRepo repo; //An object instance based on JPARepository Interface
+    // that will provide hibernate access to the database (actor table in this case)
     public SakilaDAO(ActorRepo repo) {
         this.repo = repo;
     }
-
     public Actor getActor(int id) { // uses a prepared statement with an ID parameter
         return repo.getReferenceById(id);
-    }
+    } //matches with what the controller maps
     public List<Actor> getaAllActors() {
         return repo.findAll();
-    }
-
+    } // used in both web and actors controller
     public Actor createActors(RequestActor actorNoId) {
         Actor actor = new Actor();
         actor.setFirstName(actorNoId.getFirstName());
@@ -38,66 +36,4 @@ public class SakilaDAO {
         // that it should read it from the database.
         return actor;
     }
-
-//    private DataSource datasource;
-//    public SakilaDAO(DataSource ds){
-//        this.datasource=ds;
-//    }
-//    public Actor getActor(int id) { // uses a prepared statement with an ID parameter
-//        // to get one single actor record
-//        try (Connection conn = datasource.getConnection()) {
-//            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM actor WHERE actor_Id = ?")) {
-//                ps.setInt(1, id); //setInt replaces the ? parameter in the Prepared Statement
-//               try (ResultSet rs = ps.executeQuery()){
-//                   if (rs.next()){
-//                       return new Actor(rs.getInt("actor_id"),rs.getString("first_name"),
-//                               rs.getString("last_name"), rs.getTimestamp("last_update"));
-//                   }
-//                   else throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-//               }
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);//Spring will handle this exception
-//        }
-//    }
-//
-//    public List<Actor> getaAllActors() {
-//        try (Connection conn = datasource.getConnection()) {
-//            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM actor")) {
-//                try (ResultSet rs = ps.executeQuery()){
-//                    List<Actor> actorList = new ArrayList<>();
-//                    while (rs.next()){
-//                        actorList.add( new Actor(rs.getInt("actor_id"),rs.getString("first_name"),
-//                                rs.getString("last_name"), rs.getDate("last_update")));
-//                    }
-//                    return actorList;
-//                }
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);//Spring will handle this exception
-//        }
-//    }
-//
-//    public Actor createActors(RequestActor actorNoId) {
-//        int id=0;
-//        try (Connection conn = datasource.getConnection()) {
-//            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO actor (first_name, last_name) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS)) {
-//                //the above extra parameter where an autogeneration of a key occurs will return the generated key
-//                ps.setString(1, actorNoId.getFirstName());
-//                ps.setString(2, actorNoId.getLastName());
-//                ps.executeUpdate();
-//                try (ResultSet rs = ps.getGeneratedKeys()){ //there is a result set because we used generated keys - it will contain the new actor ID
-//
-//                    if (rs.next()){ //if the new key record exists, its id will be available here
-//                        id=rs.getInt(1);
-//                        //return getActor(rs.getInt(1)); // only one field and only one record and we will return the Actor with this newly generated ID
-//                    }
-//                    else throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);//Spring will handle this exception
-//        }
-//        return getActor(id);
-//    }
 }

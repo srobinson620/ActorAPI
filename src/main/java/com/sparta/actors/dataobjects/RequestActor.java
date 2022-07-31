@@ -13,7 +13,6 @@ public class RequestActor { // no constructor as Spring will just use the getter
     @NotNull
     @Size(min=1,max=40)
     private String lastName;
-
     public String getFirstName() {
         return firstName;
     }
