@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-//@EnableJpaRepositories
+
 public class ActorsApplication {
 
     public static void main(String[] args) {

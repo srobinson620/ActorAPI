@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class RequestActor { // no constructor as Spring will just use the getters and setters
     @NotNull // will ensure 400 error produced if this data is missed
-    @Size(min=1,max=40)
+    @Size(min=1,max=40)//
     private String firstName;
     @NotNull
     @Size(min=1,max=40)
