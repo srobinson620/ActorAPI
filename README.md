@@ -1,5 +1,5 @@
 # ActorAPI
-requires [sakila download] https://dev.mysql.com/doc/sakila/en/sakila-installation.html/EntityManager
+It requires [sakila download] https://dev.mysql.com/doc/sakila/en/sakila-installation.html/EntityManager
 
 When we use Spring Initializr to build our initial application it generates a single test
 __ActorsApplicationTests.java__
