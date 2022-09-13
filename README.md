@@ -7,7 +7,7 @@ __ActorsApplicationTests.java__
 This is a trivial test that just initialises the spring system, useful to run this initially, 
 however it will try to initialise things that may have a dependancy outside of the code, that
 is it may initialise JDBC or Hibernate and if the database is not available at test time which
-is often the case this test is likely to fail so it should be removed.
+is often the case then this test is likely to fail so it should be removed.
 
 ```
 $ rm src/test/java/com/sparta/actors/ActorsApplicationTests.java
